@@ -1,0 +1,7 @@
+# Ham Trendyol dışa aktarımları müşteri kişisel verisi içerir (ad, adres, telefon) — ASLA commit etme
+data/raw/*
+!data/raw/.gitkeep
+*.xlsx
+*.pkl
+__pycache__/
+.DS_Store

@@ -1,0 +1,232 @@
+<div id="tip" hidden></div>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <h1>Ak Tuhafiye <span>Büyüme Paneli</span></h1>
+      <div class="meta">Trendyol mağaza verisi · 1 Nisan – 22 Eylül 2026 · 6 aylık satış, 19.982 paket, 117 model / 347 barkod · <span class="mono">ⓘ</span> simgesinin üzerine gelin</div>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Rapor sekmeleri">
+      <button class="tab" role="tab" id="t-ozet" aria-controls="ozet" aria-selected="true">Genel Özet</button>
+      <button class="tab" role="tab" id="t-satis" aria-controls="satis" aria-selected="false">Satış &amp; Büyüme</button>
+      <button class="tab" role="tab" id="t-kar" aria-controls="kar" aria-selected="false">Kârlılık</button>
+      <button class="tab" role="tab" id="t-sepet" aria-controls="sepet" aria-selected="false">Sepet Analizi</button>
+      <button class="tab" role="tab" id="t-musteri" aria-controls="musteri" aria-selected="false">Müşteri &amp; Dönüşüm</button>
+      <button class="tab" role="tab" id="t-urun" aria-controls="urun" aria-selected="false">Ürün Analizi</button>
+      <button class="tab" role="tab" id="t-segment" aria-controls="segment" aria-selected="false">Ürün Segmentleri</button>
+      <button class="tab" role="tab" id="t-kupon" aria-controls="kupon" aria-selected="false">Kupon Stratejisi</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ================= GENEL ÖZET ================= -->
+<section class="panel" id="ozet" role="tabpanel" aria-labelledby="t-ozet">
+  <div class="callout">
+    <h3>Tek cümlelik teşhis</h3>
+    <p id="diag"></p>
+  </div>
+  <div class="sec">
+    <div class="sech"><h2>14 temel metrik</h2><p>Kârlılık metrikleri sağ üstteki ürün maliyeti ve KDV seçimine göre yeniden hesaplanır. Durum şeridi: yeşil = sağlıklı, sarı = izlenmeli, kırmızı = aksiyon gerekli.</p></div>
+    <div class="controls" id="scen-ozet"></div>
+    <div class="kpis" id="kpi-ozet"></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>Aylık net ciro ve paket sayısı <button class="i" data-tip="trend">i</button></h3><div class="sub">Eylül yalnızca 22 günlük; kesikli çizgi 30 güne tamamlanmış tahmini gösterir.</div><div class="chart"><canvas id="c-trend"></canvas></div></div>
+    <div class="card"><h3>1 TL cironun nereye gittiği <button class="i" data-tip="waterfall">i</button></h3><div class="sub">Nisan–Ağustos sipariş verisi, seçili maliyet senaryosu</div><div class="chart"><canvas id="c-where"></canvas></div></div>
+  </div>
+  <div class="sec">
+    <div class="sech"><h2>Verinin söylediği 12 şey</h2><p>Her bulgu doğrudan raporlarınızdaki rakamlardan çıkarıldı.</p></div>
+    <div class="recs" id="ins-ozet"></div>
+  </div>
+  <div class="sec">
+    <div class="sech"><h2>30 · 60 · 90 günlük yol haritası</h2><p>Ciro ve kârı birlikte büyütecek sıralama. Önce kâr kaçağını kapatın, sonra ölçeği büyütün.</p></div>
+    <div class="grid g3" id="roadmap"></div>
+  </div>
+</section>
+
+<!-- ================= SATIŞ ================= -->
+<section class="panel" id="satis" role="tabpanel" aria-labelledby="t-satis" hidden>
+  <div class="kpis" id="kpi-satis"></div>
+  <div class="sec">
+    <div class="sech"><h2>Aylık performans</h2><p>Satış raporları + tüm siparişler + operasyon raporu birleştirildi.</p></div>
+    <div class="tbl"><table id="tb-month"></table></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>Kategori ciro payı ve iade oranı <button class="i" data-tip="cat">i</button></h3><div class="sub">6 aylık net ciro</div><div class="chart"><canvas id="c-cat"></canvas></div></div>
+    <div class="card"><h3>Kategori aylık trendi <button class="i" data-tip="cattrend">i</button></h3><div class="sub">Net ciro, bin ₺</div><div class="chart"><canvas id="c-cattrend"></canvas></div></div>
+  </div>
+  <div class="tbl"><table id="tb-cat"></table></div>
+  <div class="sec">
+    <div class="sech"><h2>Reklam verimliliği</h2><p>Reklam paneli ekran görüntüleri (1 Nis – 23 Eyl) ve Ürün Reklamları raporu.</p></div>
+    <div class="kpis" id="kpi-ads"></div>
+    <div class="tbl"><table id="tb-ads"></table></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>Haftanın günü <button class="i" data-tip="wd">i</button></h3><div class="sub">Paket sayısı (Nis–Ağu) ve ortalama sepet</div><div class="chart short"><canvas id="c-wd"></canvas></div></div>
+    <div class="card"><h3>Ayın günü <button class="i" data-tip="dom">i</button></h3><div class="sub">5 ayın toplamı. Ayın 25'inden sonraki düşüşe dikkat.</div><div class="chart short"><canvas id="c-dom"></canvas></div></div>
+  </div>
+  <div class="card"><h3>Gün × saat sipariş ısı haritası <button class="i" data-tip="heat">i</button></h3><div class="sub">Sipariş dağılım raporları, Nisan–Eylül toplamı</div><div style="overflow-x:auto"><div class="heat" id="heat"></div></div></div>
+  <div class="grid g2">
+    <div class="card"><h3>İl bazında sipariş <button class="i" data-tip="city">i</button></h3><div class="sub">İlk 12 il · paket payı ve ortalama sepet</div><div class="tbl"><table id="tb-city"></table></div></div>
+    <div class="card"><h3>İptal ve iade nedenleri <button class="i" data-tip="reasons">i</button></h3><div class="sub">6 aylık adet</div><div class="chart"><canvas id="c-reasons"></canvas></div></div>
+  </div>
+  <div class="card"><h3>12 aylık operasyon karnesi <button class="i" data-tip="ops">i</button></h3><div class="sub">Satılan adet (çubuk) ve iade oranı (çizgi) · Ekim 2025 – Eylül 2026</div><div class="chart"><canvas id="c-ops"></canvas></div></div>
+  <div class="sec">
+    <div class="sech"><h2>Satış ve büyüme önerileri</h2><p>Etiket: <span class="tag ciro">Ciro</span> <span class="tag kar">Kâr</span> <span class="tag ikisi">İkisi</span></p></div>
+    <div class="recs" id="rec-satis"></div>
+  </div>
+</section>
+
+<!-- ================= KÂRLILIK ================= -->
+<section class="panel" id="kar" role="tabpanel" aria-labelledby="t-kar" hidden>
+  <div class="callout gold"><h3>Maliyet varsayımını siz seçin</h3><p>Ürün alış maliyeti raporlarda yok. Aşağıdaki kaydırıcıyla %30, %40 ya da %50 senaryosunu seçin (ya da ara bir değer). KDV oranı ve Trendyol platform hizmet bedeli de değiştirilebilir. Bu sekmedeki tüm rakamlar ve Genel Özet'teki kâr kutuları anında güncellenir.</p></div>
+  <div class="controls" id="scen-kar"></div>
+  <div class="kpis" id="kpi-kar"></div>
+  <div class="grid g2">
+    <div class="card"><h3>Sepet tutarına göre sipariş başı katkı payı <button class="i" data-tip="cmcurve">i</button></h3><div class="sub">Barem kargo basamakları (200 ₺ ve 350 ₺) kâr eğrisini kırıyor</div><div class="chart tall"><canvas id="c-cmcurve"></canvas></div></div>
+    <div class="card"><h3>Gerçek sepet dağılımı ve barem çizgileri <button class="i" data-tip="hist">i</button></h3><div class="sub">Paket tutarı (kupon/indirim sonrası), 10 ₺'lik dilimler, 5 ay</div><div class="chart tall"><canvas id="c-hist"></canvas></div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>Sepet dilimi ekonomisi <button class="i" data-tip="bins">i</button></h3><div class="tbl"><table id="tb-bins"></table></div></div>
+    <div class="card"><h3>Kategori katkı payı <button class="i" data-tip="catcm">i</button></h3><div class="tbl"><table id="tb-catcm"></table></div></div>
+  </div>
+  <div class="card"><h3>Ürün (model) birim ekonomisi — ilk 25 <button class="i" data-tip="unitcm">i</button></h3><div class="sub">Kargo ve komisyon, ürünün yer aldığı siparişlerdeki gerçekleşen paydır</div><div class="tbl"><table id="tb-unitcm"></table></div></div>
+  <div class="card"><h3>Aylık katkı payı <button class="i" data-tip="moncm">i</button></h3><div class="chart short"><canvas id="c-moncm"></canvas></div></div>
+  <div class="sec">
+    <div class="sech"><h2>Kârı artıracak öneriler</h2><p>Kargo payı cironun ~%24'ü; en büyük kaldıraç burada.</p></div>
+    <div class="recs" id="rec-kar"></div>
+  </div>
+</section>
+
+<!-- ================= SEPET ================= -->
+<section class="panel" id="sepet" role="tabpanel" aria-labelledby="t-sepet" hidden>
+  <div class="kpis" id="kpi-sepet"></div>
+  <div class="grid g2">
+    <div class="card"><h3>Paket başına ürün adedi <button class="i" data-tip="upt">i</button></h3><div class="chart short"><canvas id="c-upt"></canvas></div></div>
+    <div class="card"><h3>Paket başına farklı model sayısı <button class="i" data-tip="models">i</button></h3><div class="chart short"><canvas id="c-models"></canvas></div></div>
+  </div>
+  <div class="card"><h3>En güçlü ürün birliktelikleri <button class="i" data-tip="pairs">i</button></h3><div class="sub">En az 12 ortak paket · Güven = A alanın yüzde kaçı B'yi de aldı · Lift &gt; 1 = tesadüften güçlü</div><div class="tbl"><table id="tb-pairs"></table></div></div>
+  <div class="grid g2">
+    <div class="card"><h3>Kategori birliktelikleri <button class="i" data-tip="catpairs">i</button></h3><div class="tbl"><table id="tb-catpairs"></table></div></div>
+    <div class="card"><h3>Aynı modelden birden fazla renk alınanlar <button class="i" data-tip="multicolor">i</button></h3><div class="tbl"><table id="tb-mc"></table></div></div>
+  </div>
+  <div class="sec">
+    <div class="sech"><h2>"Birlikte Al" kurguları</h2><p>Her set, gerçek sepetlerde birlikte alınan ürünlerden ve kargo baremine göre fiyatlanarak kuruldu.</p></div>
+    <div class="tbl"><table id="tb-bundles"></table></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>Çapraz satış (cross-sell) haritası</h3><div class="sub">Ürün sayfasında "Bunu alanlar bunu da aldı" / "Birlikte Al" alanına konacaklar</div><div class="tbl"><table id="tb-cross"></table></div></div>
+    <div class="card"><h3>Üst satış (up-sell) haritası</h3><div class="sub">Aynı ihtiyacın daha büyük/kârlı paketi</div><div class="tbl"><table id="tb-up"></table></div></div>
+  </div>
+  <div class="sec">
+    <div class="sech"><h2>Sepet büyütme önerileri</h2></div>
+    <div class="recs" id="rec-sepet"></div>
+  </div>
+</section>
+
+<!-- ================= MÜŞTERİ ================= -->
+<section class="panel" id="musteri" role="tabpanel" aria-labelledby="t-musteri" hidden>
+  <div class="kpis" id="kpi-mus"></div>
+  <div class="grid g2">
+    <div class="card"><h3>Mağaza hunisi (16–22 Eylül, günlük ortalama) <button class="i" data-tip="funnel">i</button></h3><div class="chart short"><canvas id="c-funnel"></canvas></div></div>
+    <div class="card"><h3>Günlük takipçi kazanımı ve mağaza ziyaretçisi <button class="i" data-tip="follow">i</button></h3><div class="chart short"><canvas id="c-follow"></canvas></div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>Tekrar alım aralığı <button class="i" data-tip="gap">i</button></h3><div class="sub">Aynı müşterinin iki siparişi arasındaki gün sayısı</div><div class="chart short"><canvas id="c-gap"></canvas></div></div>
+    <div class="card"><h3>Kohort: ilk alım ayına göre geri dönüş <button class="i" data-tip="cohort">i</button></h3><div class="sub">İlk alımdan sonraki aylarda tekrar sipariş veren müşteri oranı</div><div class="tbl"><table id="tb-cohort"></table></div></div>
+  </div>
+  <div class="grid g3">
+    <div class="card"><h3>Yaş <button class="i" data-tip="age">i</button></h3><div class="chart short"><canvas id="c-age"></canvas></div></div>
+    <div class="card"><h3>Cinsiyet ve Trendyol Plus <button class="i" data-tip="plus">i</button></h3><div class="chart short"><canvas id="c-plus"></canvas></div></div>
+    <div class="card"><h3>Yeni ve mevcut müşteri (aylık) <button class="i" data-tip="newold">i</button></h3><div class="chart short"><canvas id="c-new"></canvas></div></div>
+  </div>
+  <div class="sec">
+    <div class="sech"><h2>Dönüşüm ve müşteri değeri önerileri</h2></div>
+    <div class="recs" id="rec-mus"></div>
+  </div>
+</section>
+
+<!-- ================= ÜRÜN ================= -->
+<section class="panel" id="urun" role="tabpanel" aria-labelledby="t-urun" hidden>
+  <div class="kpis" id="kpi-urun"></div>
+  <div class="grid g2">
+    <div class="card"><h3>En çok ciro getiren 15 model <button class="i" data-tip="topprod">i</button></h3><div class="chart tall"><canvas id="c-topprod"></canvas></div></div>
+    <div class="card"><h3>Fiyat × hacim haritası <button class="i" data-tip="bubble">i</button></h3><div class="sub">Balon büyüklüğü = ciro, renk = segment</div><div class="chart tall"><canvas id="c-bubble"></canvas></div></div>
+  </div>
+  <div class="card"><h3>Model bazlı detay tablosu <button class="i" data-tip="prodtable">i</button></h3>
+    <div class="controls" style="margin-bottom:10px"><div class="ctl"><label for="f-seg">Segment</label><select id="f-seg"><option value="">Tümü</option><option>Hero</option><option>Core</option><option value="Rising">Yükselen</option><option>Long Tail</option></select></div>
+      <div class="ctl"><label for="f-cat">Kategori</label><select id="f-cat"><option value="">Tümü</option></select></div>
+      <div class="ctl"><label for="f-sort">Sırala</label><select id="f-sort"><option value="net_rev">Ciro</option><option value="net_units">Adet</option><option value="growth">Büyüme</option><option value="ret_rate">İade oranı</option><option value="asp">Fiyat</option><option value="cover_days">Stok gün</option></select></div></div>
+    <div class="tbl" style="max-height:520px;overflow:auto"><table id="tb-prod"></table></div></div>
+  <div class="grid g2">
+    <div class="card"><h3>Stoksuz kalan barkodlar (22 Eylül) <button class="i" data-tip="oos">i</button></h3><div class="tbl"><table id="tb-oos"></table></div></div>
+    <div class="card"><h3>En hızlı yükselen ve düşen modeller <button class="i" data-tip="movers">i</button></h3><div class="tbl"><table id="tb-movers"></table></div></div>
+  </div>
+  <div class="sec">
+    <div class="sech"><h2>Ürün bazlı öneriler</h2></div>
+    <div class="recs" id="rec-urun"></div>
+  </div>
+</section>
+
+<!-- ================= SEGMENT ================= -->
+<section class="panel" id="segment" role="tabpanel" aria-labelledby="t-segment" hidden>
+  <div class="callout teal"><h3>Segmentasyon nasıl yapıldı?</h3><p>117 modelin 6 aylık net cirosu büyükten küçüğe sıralandı ve kümülatif paya bakıldı (Pareto). <b>Hero</b>: cironun ilk ~%50'sini taşıyan ya da tek başına %4+ pay alan modeller. <b>Core</b>: kümülatif %50–80 arasındaki istikrarlı modeller. <b>Yükselen</b>: Tem–Ağu ortalaması Nis–May ortalamasına göre %40+ büyüyen (en az 3 ay satışı olan) veya küçükken hızla ivmelenen modeller. <b>Long Tail</b>: geri kalan, cironun son ~%20'sini paylaşan geniş ürün yelpazesi.</p></div>
+  <div class="grid g2">
+    <div class="card"><h3>Segmentlerin ciro ve ürün payı <button class="i" data-tip="segshare">i</button></h3><div class="chart"><canvas id="c-seg"></canvas></div></div>
+    <div class="card"><h3>Pareto eğrisi <button class="i" data-tip="pareto">i</button></h3><div class="chart"><canvas id="c-pareto"></canvas></div></div>
+  </div>
+  <div class="grid g2" id="segcards"></div>
+  <div class="card"><h3>Segment × rol matrisi: kim ne işe yarar? <button class="i" data-tip="rolematrix">i</button></h3><div class="tbl"><table id="tb-role"></table></div></div>
+  <div class="sec">
+    <div class="sech"><h2>Segment bazlı yatırım önerileri</h2></div>
+    <div class="recs" id="rec-seg"></div>
+  </div>
+</section>
+
+<!-- ================= KUPON ================= -->
+<section class="panel" id="kupon" role="tabpanel" aria-labelledby="t-kupon" hidden>
+  <div class="callout"><h3>Kupon stratejisinin temel kuralı (verinizden)</h3><p id="kupon-rule"></p></div>
+  <div class="sec">
+    <div class="sech"><h2>4 kupon türü: nasıl çalışır, sizin için ne işe yarar?</h2><p>Transkript + Trendyol Akademi ve satıcı rehberleri araştırması. Kurallar panelde zaman zaman değişebilir; oluştururken ekrandaki limitleri teyit edin.</p></div>
+    <div class="tbl"><table id="tb-ctypes"></table></div>
+  </div>
+  <div class="card">
+    <h3>Kupon simülatörü: alt limit ve indirim tutarı kârınızı nasıl etkiler? <button class="i" data-tip="sim">i</button></h3>
+    <div class="sub">Gerçek sepet dağılımınız (19.982 paket) üzerinde çalışır. Ön ayarları deneyin ya da kendi kurgunuzu girin.</div>
+    <div class="controls" style="margin:6px 0 12px" id="sim-presets"></div>
+    <div class="controls">
+      <div class="ctl"><label for="s-T">Alt limit: <span id="v-T" class="mono"></span></label><input type="range" id="s-T" min="0" max="600" step="25" value="350"></div>
+      <div class="ctl"><label for="s-D">İndirim: <span id="v-D" class="mono"></span></label><input type="range" id="s-D" min="5" max="100" step="5" value="30"></div>
+      <div class="ctl"><label for="s-u">Uygun sepetlerde kullanım: <span id="v-u" class="mono"></span></label><input type="range" id="s-u" min="5" max="100" step="5" value="35"></div>
+      <div class="ctl"><label for="s-s">Limite yakın sepetlerin yükselme oranı: <span id="v-s" class="mono"></span></label><input type="range" id="s-s" min="0" max="40" step="1" value="10"></div>
+      <div class="ctl"><label for="s-g">Kuponun getirdiği ek sipariş: <span id="v-g" class="mono"></span></label><input type="range" id="s-g" min="0" max="15" step="0.5" value="3"></div>
+    </div>
+    <div class="sim-out" id="sim-out" style="margin-top:14px"></div>
+    <div class="foot" id="sim-foot"></div>
+  </div>
+  <div class="sec">
+    <div class="sech"><h2>Kategori kategori kupon planı</h2><p>Kategori verisi (ciro payı, ortalama fiyat, 200 ₺ altı sepet oranı, kargo payı) → uygun kupon türü ve kurgu.</p></div>
+    <div class="tbl"><table id="tb-catplan"></table></div>
+  </div>
+  <div class="sec">
+    <div class="sech"><h2>Takipçi kazanma planı</h2><p>Bugün: <span id="fol-now"></span></p></div>
+    <div class="grid g2" id="follow-plan"></div>
+  </div>
+  <div class="sec">
+    <div class="sech"><h2>Kupon takvimi: Eylül 2026 – Mayıs 2027</h2><p>Tarihler, verinizdeki talep döngülerine (ay sonu düşüşü, Pazartesi zirvesi, Haziran sezonu) ve özel günlere göre kuruldu. Dini bayram tarihleri tahminidir.</p></div>
+    <div class="timeline" id="calendar"></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>Aylık kupon bütçesi dağılımı <button class="i" data-tip="budget">i</button></h3><div class="chart short"><canvas id="c-budget"></canvas></div><div class="foot" id="budget-foot"></div></div>
+    <div class="card"><h3>Her kuponda izlenecek ölçüler</h3><ul class="list" id="kupon-kpis"></ul></div>
+  </div>
+  <div class="sec">
+    <div class="sech"><h2>Kupon önerileri</h2></div>
+    <div class="recs" id="rec-kupon"></div>
+  </div>
+  <div class="card"><h3>Kaynaklar</h3><ul class="list" id="sources"></ul></div>
+</section>
+
+<p class="foot">Hazırlayan: Claude · Kaynak: Trendyol Satıcı Paneli dışa aktarımları (satış, tüm siparişler, sipariş dağılım, mağaza, operasyon, ürün reklamları raporları) ve reklam paneli ekran görüntüleri. Müşteri kimlik bilgileri analizde yalnızca tekrar alımı saymak için kullanıldı; bu sayfada kişisel veri yer almaz.</p>
+</main>
