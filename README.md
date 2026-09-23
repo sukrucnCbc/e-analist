@@ -38,6 +38,26 @@ Dosya adında ay adı (nisan, mayıs, haziran, temmuz, ağustos, eylül) ve rapo
 
 Reklam paneli toplamları (gösterim, tıklama, harcama, getiri) şimdilik `analysis/analyze.py` içinde `ads_total` altında elle girilmiştir.
 
+## Veritabanı (Supabase)
+
+Geliştirme, test ve canlı ortam aynı Supabase projesini kullanır. Şema: `supabase/migrations/0001_init.sql`.
+
+**Bir kerelik kurulum**
+1. supabase.com'da proje açın (bölge: Frankfurt / eu-central-1 önerilir).
+2. SQL Editor → `supabase/migrations/0001_init.sql` içeriğini yapıştırıp çalıştırın.
+3. `.env.example` dosyasını `.env` olarak kopyalayın; `DATABASE_URL` ve `HASH_SALT` değerlerini girin.
+4. Authentication → Sign In / Providers → "Allow new users to sign up" kapatın (sadece siz giriş yapacaksınız).
+
+**Veri yükleme**
+```bash
+python ingest/ingest.py          # data/raw içindeki raporları veritabanına yazar (tekrar çalıştırmak güvenli: upsert)
+python ingest/ingest.py --csv out/   # veritabanına yazmadan kontrol
+```
+
+Yükleme sırasında ad, adres, telefon, e-posta ve vergi bilgileri **atılır**; müşteri `HASH_SALT` ile üretilen geri çözülemez bir kodla temsil edilir.
+
+**Gizli bilgiler:** Veritabanı adresi, şifre ve anahtarlar yalnızca `.env` dosyasındadır; `.env` `.gitignore` ile GitHub'a gitmez. Canlıya alırken aynı değerler barındırma servisinin (Vercel/Netlify) "Environment Variables" ayarına girilir. Tüm tablolarda RLS açıktır: anon anahtarla hiçbir veri okunamaz.
+
 ## Veri gizliliği
 
 `tum-siparisler` dosyaları müşteri adı, adres ve telefon içerir; Trendyol bu veriyi yalnızca sözleşmesel yükümlülükler için paylaşır. Bu dosyalar `.gitignore` ile depoya alınmaz. `data.json` ve üretilen HTML yalnızca toplulaştırılmış (kişisel olmayan) veri içerir, ancak ticari bilgidir — depoyu **private** tutun.

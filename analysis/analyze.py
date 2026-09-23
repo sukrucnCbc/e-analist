@@ -45,6 +45,7 @@ _o = []
 for f in files('tum-siparisler'):
     _d = pd.read_excel(f, header=1, dtype=str); _d['src'] = mkey(f); _o.append(_d)
 O = pd.concat(_o)
+O = O.drop_duplicates(subset=[c for c in O.columns if c != 'src'])  # aylar arası mükerrer satırlar
 num = ['Adet', 'Birim Fiyatı', 'Satış Tutarı', 'İndirim Tutarı', 'Trendyol İndirim Tutarı', 'Faturalanacak Tutar', 'Faturalanan Kargo Tutarı', 'Komisyon Oranı']
 for c in num: O[c] = pd.to_numeric(O[c], errors='coerce')
 O['m'] = O['src'].map(lambda s: 'mayis' if s == 'mayis' else s)

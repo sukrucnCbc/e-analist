@@ -5,3 +5,9 @@ data/raw/*
 *.pkl
 __pycache__/
 .DS_Store
+
+# Gizli bilgiler
+.env
+.env.*
+!.env.example
+out/
