@@ -40,11 +40,11 @@ Reklam paneli toplamları (gösterim, tıklama, harcama, getiri) şimdilik `anal
 
 ## Veritabanı (Supabase)
 
-Geliştirme, test ve canlı ortam aynı Supabase projesini kullanır. Şema: `supabase/migrations/0001_init.sql`.
+Geliştirme, test ve canlı ortam aynı Supabase projesini kullanır. Şema: `supabase/migrations/20260924000000_init.sql`.
 
 **Bir kerelik kurulum**
 1. supabase.com'da proje açın (bölge: Frankfurt / eu-central-1 önerilir).
-2. SQL Editor → `supabase/migrations/0001_init.sql` içeriğini yapıştırıp çalıştırın.
+2. SQL Editor → `supabase/migrations/20260924000000_init.sql` içeriğini yapıştırıp çalıştırın.
 3. `.env.example` dosyasını `.env` olarak kopyalayın; `DATABASE_URL` ve `HASH_SALT` değerlerini girin.
 4. Authentication → Sign In / Providers → "Allow new users to sign up" kapatın (sadece siz giriş yapacaksınız).
 
