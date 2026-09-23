@@ -1,5 +1,7 @@
 # Ak Tuhafiye · Trendyol Büyüme Paneli
 
+> Sürüm: **v0.1 — dark-knight** · ayrıntılar için [CHANGELOG.md](CHANGELOG.md)
+
 Trendyol satıcı paneli dışa aktarımlarından e-ticaret metriklerini (AOV, UPT, CVR, katkı payı, iade, ROAS/ACoS/TACoS, CLV, RPR, OOS, lead time) hesaplayan ve 8 sekmeli interaktif bir HTML panel üreten analiz projesi.
 
 ## Yapı
