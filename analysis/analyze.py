@@ -16,24 +16,39 @@ def mkey(f):
     for k, v in NMAP.items():
         if n.startswith(k) or ('-' + k + '-') in n or ('_' + k) in n or (k + '-') in n: return v
 out = {}
+try:
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
+except ImportError:
+    pass
+SOURCE = os.environ.get('SOURCE', 'db' if os.environ.get('DATABASE_URL') else 'excel')
+print('Veri kaynağı:', 'Supabase veritabanı' if SOURCE == 'db' else 'Excel (data/raw)')
+if SOURCE == 'db':
+    import sys; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from db_source import load as _db_load, REASONS as _REASONS
+    _S, _K, _O, _DIST, _OPS, _STORE, _ADS, _ADS_TOTAL = _db_load()
 
 # ---------------- SALES REPORTS ----------------
-sales = []
-cat_rows = []
-for f in files('satis-raporu'):
-    m = mkey(f)
-    d = pd.read_excel(f, sheet_name='urun-bazlı-satış-raporu')
-    for c in ['Toplam Komisyon Tutarı', 'Güncel Satış Fiyatı', 'Ortalama Komisyon Oranı']:
-        d[c] = pd.to_numeric(d[c], errors='coerce')
-    d['m'] = m
-    sales.append(d)
-    k = pd.read_excel(f, sheet_name='kategori-bazlı-satış-raporu')
-    for c in ['Toplam Komisyon Tutarı']: k[c] = pd.to_numeric(k[c], errors='coerce')
-    k['m'] = m
-    cat_rows.append(k)
-S = pd.concat(sales)
-K = pd.concat(cat_rows)
-reason_cols = list(S.columns[23:44])
+if SOURCE == 'db':
+    S, K = _S, _K
+    reason_cols = list(_REASONS)
+else:
+    sales = []
+    cat_rows = []
+    for f in files('satis-raporu'):
+        m = mkey(f)
+        d = pd.read_excel(f, sheet_name='urun-bazlı-satış-raporu')
+        for c in ['Toplam Komisyon Tutarı', 'Güncel Satış Fiyatı', 'Ortalama Komisyon Oranı']:
+            d[c] = pd.to_numeric(d[c], errors='coerce')
+        d['m'] = m
+        sales.append(d)
+        k = pd.read_excel(f, sheet_name='kategori-bazlı-satış-raporu')
+        for c in ['Toplam Komisyon Tutarı']: k[c] = pd.to_numeric(k[c], errors='coerce')
+        k['m'] = m
+        cat_rows.append(k)
+    S = pd.concat(sales)
+    K = pd.concat(cat_rows)
+    reason_cols = list(S.columns[23:44])
 
 # barcode master (latest info)
 master = S.sort_values('m', key=lambda s: s.map({m: i for i, m in enumerate(MONTHS)})).groupby('Barkod').last()
@@ -41,11 +56,14 @@ bar2model = master['Model Kodu'].to_dict()
 bar2cat = master['Kategori'].to_dict()
 
 # ---------------- ORDERS ----------------
-_o = []
-for f in files('tum-siparisler'):
-    _d = pd.read_excel(f, header=1, dtype=str); _d['src'] = mkey(f); _o.append(_d)
-O = pd.concat(_o)
-O = O.drop_duplicates(subset=[c for c in O.columns if c != 'src'])  # aylar arası mükerrer satırlar
+if SOURCE == 'db':
+    O = _O
+else:
+    _o = []
+    for f in files('tum-siparisler'):
+        _d = pd.read_excel(f, header=1, dtype=str); _d['src'] = mkey(f); _o.append(_d)
+    O = pd.concat(_o)
+    O = O.drop_duplicates(subset=[c for c in O.columns if c != 'src'])  # aylar arası mükerrer satırlar
 num = ['Adet', 'Birim Fiyatı', 'Satış Tutarı', 'İndirim Tutarı', 'Trendyol İndirim Tutarı', 'Faturalanacak Tutar', 'Faturalanan Kargo Tutarı', 'Komisyon Oranı']
 for c in num: O[c] = pd.to_numeric(O[c], errors='coerce')
 O['m'] = O['src'].map(lambda s: 'mayis' if s == 'mayis' else s)
@@ -55,7 +73,7 @@ O['deliv'] = pd.to_datetime(O['Teslim Tarihi'], format='%d.%m.%Y %H:%M', errors=
 O['model'] = O['Barkod'].map(bar2model).fillna(O['Stok Kodu'])
 O['cat'] = O['Barkod'].map(bar2cat).fillna('Diğer')
 O['comm'] = O['Faturalanacak Tutar'] * O['Komisyon Oranı'] / 100
-O['cust'] = (O['Alıcı'].str.lower().str.strip().str.replace(r'\s+', ' ', regex=True) + '|' + O['İl'].str.lower() + '|' + O['İlçe'].str.lower())
+if 'cust' not in O: O['cust'] = (O['Alıcı'].str.lower().str.strip().str.replace(r'\s+', ' ', regex=True) + '|' + O['İl'].str.lower() + '|' + O['İlçe'].str.lower())
 O['returned'] = O['Sipariş Statüsü'].eq('İade edildi')
 
 def cargo_rule(x):
@@ -74,14 +92,17 @@ P['d_to_deliv'] = (P['deliv'] - P['ship']).dt.total_seconds() / 86400
 P['d_total'] = (P['deliv'] - P['dt']).dt.total_seconds() / 86400
 
 # ---------------- MONTHLY KPI ----------------
-ops = pd.read_excel(files('operasyon')[0]).set_index('Kalite Metriklerim')
+ops = _OPS if SOURCE == 'db' else pd.read_excel(files('operasyon')[0]).set_index('Kalite Metriklerim')
 opmap = {'nisan': 'Nis 2026', 'mayis': 'May 2026', 'haziran': 'Haz 2026', 'temmuz': 'Tem 2026', 'a_ustos': 'Ağu 2026', 'eyl_l': 'Eyl 2026'}
 
-dist = {}
-for f in files('siparis-dagilim'):
-    m = mkey(f)
-    x = pd.ExcelFile(f)
-    dist[m] = {s: pd.read_excel(f, sheet_name=s) for s in x.sheet_names}
+if SOURCE == 'db':
+    dist = _DIST
+else:
+    dist = {}
+    for f in files('siparis-dagilim'):
+        m = mkey(f)
+        x = pd.ExcelFile(f)
+        dist[m] = {s: pd.read_excel(f, sheet_name=s) for s in x.sheet_names}
 
 monthly = []
 for m in MONTHS:
@@ -104,14 +125,14 @@ for m in MONTHS:
     dd = dist.get(m)
     if dd is not None:
         nm = dd['Yeni & Mevcut Müşteri']
-        row['new_share'] = float(nm.iloc[0]['Sipariş Dağılım%'])
+        row['new_share'] = float(nm[nm.iloc[:, 0].astype(str).str.startswith('Yeni')]['Sipariş Adedi'].sum() / nm['Sipariş Adedi'].sum() * 100)
         row['dist_orders'] = int(nm['Sipariş Adedi'].sum())
         pl = dd['Trendyol Plus']
-        row['plus_share'] = float(pl.iloc[0]['Sipariş Dağılım%'])
+        row['plus_share'] = float(pl[pl.iloc[:, 0].astype(str).str.contains('Plus')]['Sipariş Adedi'].sum() / pl['Sipariş Adedi'].sum() * 100)
         ab = dd['Adet Bazlı']
-        row['single_item_share'] = float(ab.iloc[0]['Sipariş Dağılım%'])
+        row['single_item_share'] = float(ab[ab.iloc[:, 0].astype(str) == '1']['Sipariş Adedi'].sum() / ab['Sipariş Adedi'].sum() * 100)
         tb = dd['Tutar Bazlı']
-        row['under250_share'] = float(tb.iloc[0]['Sipariş Dağılım%'])
+        row['under250_share'] = float(tb[tb.iloc[:, 0].astype(str).str.startswith('0 TRY')]['Sipariş Adedi'].sum() / tb['Sipariş Adedi'].sum() * 100)
     col = opmap[m]
     row['op_units'] = float(ops.loc['Satılan Ürün Adedi', col])
     row['op_ret'] = float(ops.loc['İade Oranı', col])
@@ -346,10 +367,10 @@ out['carrier'] = [dict(c=k.replace(' Marketplace', ''), n=int(len(g)), h=float(g
 P['dbin'] = pd.cut(P.d_total, [0, 2, 3, 4, 5, 7, 30], labels=['≤2', '2-3', '3-4', '4-5', '5-7', '7+'])
 out['ret_by_days'] = [dict(b=str(k), n=int(len(g)), ret=float(g.returned.mean() * 100)) for k, g in P.groupby('dbin')]
 # order hour -> ship
-out['store'] = json.loads(pd.read_excel(files('magaza')[0]).to_json(orient='records', force_ascii=False))
+out['store'] = json.loads((_STORE if SOURCE == 'db' else pd.read_excel(files('magaza')[0])).to_json(orient='records', force_ascii=False))
 
 # ---------------- ADS ----------------
-ads = pd.read_excel(files('reklam')[0])
+ads = _ADS.copy() if SOURCE == 'db' else pd.read_excel(files('reklam')[0])
 def tn(x):
     if isinstance(x, (int, float)): return float(x)
     x = str(x).strip()
@@ -357,7 +378,7 @@ def tn(x):
     return float(x.replace('.', '').replace(',', '.'))
 for c in ads.columns[6:]: ads[c] = ads[c].map(tn)
 out['ads_products'] = json.loads(ads.to_json(orient='records', force_ascii=False))
-out['ads_total'] = dict(impr=4912762, clicks=141168, sales=11007, rev=1387840.27, spend=140693.95, roas=9.86, visits=96,
+out['ads_total'] = _ADS_TOTAL if SOURCE == 'db' else dict(impr=4912762, clicks=141168, sales=11007, rev=1387840.27, spend=140693.95, roas=9.86, visits=96,
                         meta=dict(spend=1498.27, impr=19707, clicks=792, sales=31, rev=6901.50, roas=4.61))
 
 

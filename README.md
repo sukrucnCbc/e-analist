@@ -1,13 +1,16 @@
 # Ak Tuhafiye · Trendyol Büyüme Paneli
 
-> Sürüm: **v0.1 — dark-knight** · ayrıntılar için [CHANGELOG.md](CHANGELOG.md)
+> Sürüm: **v0.2 — morpheus** · ayrıntılar için [CHANGELOG.md](CHANGELOG.md)
 
 Trendyol satıcı paneli dışa aktarımlarından e-ticaret metriklerini (AOV, UPT, CVR, katkı payı, iade, ROAS/ACoS/TACoS, CLV, RPR, OOS, lead time) hesaplayan ve 8 sekmeli interaktif bir HTML panel üreten analiz projesi.
 
 ## Yapı
 
 ```
-analysis/analyze.py      Ham Excel'leri okur → dashboard/data.json (yalnızca toplulaştırılmış veri)
+guncelle.py              Tek komutla güncelleme (yükle → analiz → panel)
+ingest/ingest.py         Excel → Supabase (kişisel veri atılır)
+analysis/db_source.py    Supabase → analiz tabloları
+analysis/analyze.py      Metrikler → dashboard/data.json (yalnızca toplulaştırılmış veri)
 dashboard/src/           Panelin HTML/CSS/JS kaynakları
 dashboard/build.py       src + data.json → dashboard/dist/ak-tuhafiye-buyume-paneli.html
 data/raw/                Ham Trendyol raporları (git'e GİRMEZ, .gitignore)
@@ -17,10 +20,10 @@ data/raw/                Ham Trendyol raporları (git'e GİRMEZ, .gitignore)
 
 ```bash
 pip install -r requirements.txt
-# Trendyol raporlarını data/raw/ içine koyun (aşağıdaki listeye bakın)
-python analysis/analyze.py
-python dashboard/build.py
-# dashboard/dist/ak-tuhafiye-buyume-paneli.html dosyasını tarayıcıda açın
+python guncelle.py            # Supabase'den oku → analiz → panel
+python guncelle.py --yukle    # yeni Excel'leri (data/raw) önce Supabase'e yükle
+python guncelle.py --excel    # veritabanı olmadan, doğrudan Excel'den
+# Çıktı: dashboard/dist/ak-tuhafiye-buyume-paneli.html
 ```
 
 ## Beklenen ham dosyalar (`data/raw/`)
@@ -36,7 +39,7 @@ Dosya adında ay adı (nisan, mayıs, haziran, temmuz, ağustos, eylül) ve rapo
 | Mağaza raporu | `magaza` | Raporlar → Mağaza |
 | Ürün reklamları raporu | `Reklam` | Reklam → Ürün Reklamları |
 
-Reklam paneli toplamları (gösterim, tıklama, harcama, getiri) şimdilik `analysis/analyze.py` içinde `ads_total` altında elle girilmiştir.
+Reklam paneli toplamları (gösterim, tıklama, harcama, getiri) `ingest/ingest.py` içindeki `AD_TOTALS` listesinden `ad_totals` tablosuna yazılır; yeni dönemde orayı güncelleyin.
 
 ## Veritabanı (Supabase)
 

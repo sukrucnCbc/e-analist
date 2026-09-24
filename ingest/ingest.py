@@ -20,6 +20,7 @@ try:
 except ImportError:
     pass
 
+os.environ.setdefault('PGTZ', 'UTC')  # tarihler Trendyol'daki yerel saatle, dönüşümsüz saklanır
 RAW = os.environ.get('RAW_DIR', os.path.join(ROOT, 'data', 'raw'))
 TR = str.maketrans('ıİşŞğĞüÜöÖçÇ', 'iIsSgGuUoOcC')
 MONTHS = {'ocak': 1, 'subat': 2, 'mart': 3, 'nisan': 4, 'mayis': 5, 'haziran': 6, 'temmuz': 7, 'agustos': 8, 'eylul': 9, 'ekim': 10, 'kasim': 11, 'aralik': 12}
