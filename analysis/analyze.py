@@ -441,6 +441,14 @@ for l in ('pairs', 'pairs_lift'):
 out['hist_tail_mean'] = float(P[P.net >= 590].net.mean())
 out['aov_all'] = float(P.net.mean())
 out['mon_orders'] = {m: [int((P.m == m).sum()), float(P[P.m == m].net.sum()), float(P[P.m == m].cargo_f.sum()), float(P[P.m == m].comm.sum())] for m in MONTHS[:5]}
+# rapor doluluk haritası (Raporlar sekmesi); panel.py açıkken canlı veriyle yenilenir
+if SOURCE == 'db':
+    try:
+        from doluluk import compute as _cov, connect as _cov_con
+        with _cov_con() as _c:
+            out['coverage'] = _cov(_c)
+    except Exception as e:
+        print('Uyarı: rapor doluluk haritası hesaplanamadı:', e)
 os.makedirs(os.path.dirname(os.path.abspath(OUT)), exist_ok=True)
 json.dump(out, open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, default=float)
 print('data.json yazıldı:', OUT, '| paket:', out['tot']['pk'], '| net ciro:', round(out['tot']['net_rev']))

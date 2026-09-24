@@ -14,6 +14,7 @@
       <button class="tab" role="tab" id="t-urun" aria-controls="urun" aria-selected="false">Ürün Analizi</button>
       <button class="tab" role="tab" id="t-segment" aria-controls="segment" aria-selected="false">Ürün Segmentleri</button>
       <button class="tab" role="tab" id="t-kupon" aria-controls="kupon" aria-selected="false">Kupon Stratejisi</button>
+      <button class="tab" role="tab" id="t-raporlar" aria-controls="raporlar" aria-selected="false">Raporlar</button>
     </nav>
   </div>
 </header>
@@ -228,5 +229,84 @@
   <div class="card"><h3>Kaynaklar</h3><ul class="list" id="sources"></ul></div>
 </section>
 
+<!-- ================= RAPORLAR ================= -->
+<section class="panel" id="raporlar" role="tabpanel" aria-labelledby="t-raporlar" hidden>
+  <div class="sec">
+    <div class="sech"><h2>Rapor doluluk takvimi</h2><p>Her kutu bir ay. Renk, o ay için Supabase'de bulunan aylık raporların ne kadarının dolu olduğunu gösterir: koyu yeşil = hepsi tam, sarı = kısmen, kırmızı = hiç yok. Eksik bir kutuya tıklayıp o raporu yükleyebilirsiniz.</p></div>
+    <div class="rp-bar">
+      <div class="seg-btns" id="rp-years" role="group" aria-label="Yıl"></div>
+      <div class="rp-actions">
+        <button type="button" class="btn" id="rp-import">Rapor içe aktar</button>
+        <button type="button" class="btn primary" id="rp-sync">Senkronize et</button>
+      </div>
+    </div>
+    <div class="rp-status" id="rp-status" role="status" hidden></div>
+    <div class="kpis" id="kpi-rapor"></div>
+    <div class="card">
+      <div class="rp-scroll"><div class="rp-grid" id="rp-grid"></div></div>
+      <div class="rp-legend"><span>Eksik</span><i class="rp-ramp" aria-hidden="true"></i><span>Tam</span><span class="rp-sw future" aria-hidden="true"></span><span>Henüz gelmedi</span></div>
+    </div>
+    <div class="grid g2">
+      <div class="card" id="rp-pending-card" hidden><h3>Senkronize edilmeyi bekleyen dosyalar</h3><div class="sub">"Senkronize et" ile Supabase'e yazılır ve panel yeniden üretilir.</div><ul class="list" id="rp-pending"></ul></div>
+      <div class="card"><h3>Ürün reklamları raporu</h3><div class="sub">Aylık değil, o anki kampanya listesidir; takvimde yer almaz. Her yeni yükleme bir öncekinin yerini alır.</div><div id="rp-ads"></div></div>
+    </div>
+    <details class="card" id="rp-log-card" hidden><summary>Son senkronizasyon kaydı</summary><pre class="rp-log" id="rp-log"></pre></details>
+  </div>
+
+  <dialog id="rp-dialog" aria-labelledby="rp-dlg-h">
+    <form method="dialog" id="rp-form">
+      <h3 id="rp-dlg-h">Rapor içe aktar</h3>
+      <label>Rapor türü<select id="rp-type" required></select></label>
+      <div class="rp-where" id="rp-where"></div>
+      <div class="rp-period" id="rp-period-row">
+        <label>Ay<select id="rp-month"></select></label>
+        <label>Yıl<select id="rp-year"></select></label>
+      </div>
+      <label>Excel dosyası (.xlsx)<input type="file" id="rp-file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required></label>
+      <p class="rp-msg" id="rp-msg" role="alert"></p>
+      <div class="rp-dlg-actions">
+        <button type="button" class="btn" id="rp-cancel">Vazgeç</button>
+        <button type="submit" class="btn primary" id="rp-send" value="send">Yükle</button>
+      </div>
+    </form>
+  </dialog>
+</section>
+
 <p class="foot">Hazırlayan: Claude · Kaynak: Trendyol Satıcı Paneli dışa aktarımları (satış, tüm siparişler, sipariş dağılım, mağaza, operasyon, ürün reklamları raporları) ve reklam paneli ekran görüntüleri. Müşteri kimlik bilgileri analizde yalnızca tekrar alımı saymak için kullanıldı; bu sayfada kişisel veri yer almaz.</p>
 </main>
+
+<!-- ================= AI ASİSTAN ================= -->
+<button type="button" class="ai-fab" id="ai-fab" aria-label="AI asistanı aç" aria-expanded="false" aria-controls="ai-panel">
+  <span class="orb" aria-hidden="true"></span>
+</button>
+<section class="ai-panel" id="ai-panel" role="dialog" aria-modal="false" aria-labelledby="ai-h" hidden>
+  <header class="ai-head">
+    <h2 id="ai-h">AI Asistan <span class="ai-badge">Test</span></h2>
+    <button type="button" class="ai-x" id="ai-close" aria-label="Asistanı kapat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </header>
+  <div class="ai-body" id="ai-body">
+    <div class="ai-hello" id="ai-hello">
+      <span class="orb big" aria-hidden="true"></span>
+      <p class="ai-greet">Merhaba! Bugün neye bakalım?</p>
+      <p class="ai-sub">Mağaza verinizden hızlı içgörü için bir seçenek seçin ya da soru yazın.</p>
+    </div>
+    <div class="ai-msgs" id="ai-msgs" aria-live="polite"></div>
+  </div>
+  <div class="ai-opts" id="ai-opts">
+    <button type="button" class="ai-opt" data-q="Bu ay satışlarımda ne değişti? Öne çıkan artış ve düşüşleri özetle.">
+      <span class="ai-ic c1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16M8 15l4-4 3 3 5-6"/></svg></span>Satış içgörüsü</button>
+    <button type="button" class="ai-opt" data-q="Reklamlarım verimli mi? ROAS'ı düşük kampanyaları ve bütçe önerisini göster.">
+      <span class="ai-ic c2"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1zM15 9a3 3 0 0 1 0 6M18 6a7 7 0 0 1 0 12"/></svg></span>Reklam içgörüsü</button>
+    <button type="button" class="ai-opt" data-q="Stoğu biten ya da bitmek üzere olan çok satan ürünlerim hangileri?">
+      <span class="ai-ic c3"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8M12 13v8"/></svg></span>Stok &amp; ürün uyarısı</button>
+    <button type="button" class="ai-opt" data-q="Bu ay için bir kupon kampanyası kurgula: kupon türü, alt limit, indirim tutarı, süre ve bütçe öner.">
+      <span class="ai-ic c4"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9V7a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2a3 3 0 0 0 0 6v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-2a3 3 0 0 0 0-6zM14 6v2M14 11v2M14 16v2"/></svg></span>Kupon Kurguları</button>
+  </div>
+  <form class="ai-input" id="ai-form" autocomplete="off">
+    <button type="button" class="ai-round" aria-label="Dosya ekle" data-soon><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5l-8.2 8.2a5 5 0 0 1-7.1-7.1l8.5-8.5a3.3 3.3 0 0 1 4.7 4.7l-8.5 8.5a1.7 1.7 0 0 1-2.4-2.4l7.8-7.8"/></svg></button>
+    <label class="sr" for="ai-q">Asistana soru sorun</label>
+    <input id="ai-q" type="text" placeholder="Bana bir şey sor…" maxlength="500">
+    <button type="button" class="ai-round" aria-label="Sesle sor" data-soon><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+    <button type="submit" class="ai-send" aria-label="Gönder"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+  </form>
+</section>

@@ -1,15 +1,17 @@
 # Ak Tuhafiye · Trendyol Büyüme Paneli
 
-> Sürüm: **v0.2 — morpheus** · ayrıntılar için [CHANGELOG.md](CHANGELOG.md)
+> Sürüm: **v0.3 — matrix** · ayrıntılar için [CHANGELOG.md](CHANGELOG.md)
 
-Trendyol satıcı paneli dışa aktarımlarından e-ticaret metriklerini (AOV, UPT, CVR, katkı payı, iade, ROAS/ACoS/TACoS, CLV, RPR, OOS, lead time) hesaplayan ve 8 sekmeli interaktif bir HTML panel üreten analiz projesi.
+Trendyol satıcı paneli dışa aktarımlarından e-ticaret metriklerini (AOV, UPT, CVR, katkı payı, iade, ROAS/ACoS/TACoS, CLV, RPR, OOS, lead time) hesaplayan ve 9 sekmeli interaktif bir HTML panel üreten analiz projesi.
 
 ## Yapı
 
 ```
 guncelle.py              Tek komutla güncelleme (yükle → analiz → panel)
+panel.py                 Paneli yerel sunucuyla açar: Raporlar sekmesinden içe aktarma + senkronizasyon
 ingest/ingest.py         Excel → Supabase (kişisel veri atılır)
 analysis/db_source.py    Supabase → analiz tabloları
+analysis/doluluk.py      Hangi ay için hangi raporun Supabase'de olduğu (Raporlar sekmesi)
 analysis/analyze.py      Metrikler → dashboard/data.json (yalnızca toplulaştırılmış veri)
 dashboard/src/           Panelin HTML/CSS/JS kaynakları
 dashboard/build.py       src + data.json → dashboard/dist/ak-tuhafiye-buyume-paneli.html
@@ -25,6 +27,20 @@ python guncelle.py --yukle    # yeni Excel'leri (data/raw) önce Supabase'e yük
 python guncelle.py --excel    # veritabanı olmadan, doğrudan Excel'den
 # Çıktı: dashboard/dist/ak-tuhafiye-buyume-paneli.html
 ```
+
+### Raporlar sekmesi: eksik raporları panelden tamamlama
+
+```bash
+python panel.py               # tarayıcıda http://127.0.0.1:8765/#raporlar açılır
+```
+
+1. Takvimde kırmızı/sarı bir kutuya tıklayın (ya da **Rapor içe aktar**). Rapor türü ve ay hazır seçili gelir.
+2. Trendyol'dan indirdiğiniz Excel'i seçip **Yükle**. Dosya seçilen rapor türüyle okunarak kontrol edilir ve `data/raw` içine standart adla kaydedilir.
+3. **Senkronize et**: `data/raw` → Supabase → analiz → panel. Bitince sayfa yenilenir ve kutular güncel doluluğu gösterir.
+
+AI asistan butonu (sağ alt) şimdilik yalnızca arayüzdür. Küre yerine kendi karakter görselinizi kullanmak için `dashboard/src/asistan.png` dosyasını ekleyip `python dashboard/build.py` çalıştırın.
+
+Sunucu yalnızca bu bilgisayardan (127.0.0.1) erişilebilir. Panel HTML dosyası doğrudan açıldığında takvim görünür ama içe aktarma butonları kapalıdır.
 
 ## Beklenen ham dosyalar (`data/raw/`)
 

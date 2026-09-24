@@ -47,7 +47,8 @@ def period_of(f, year=2026):
     n = norm(f)
     for k, v in MONTHS.items():
         if re.search(rf'(^|[-_ ]){k}([-_ ]|$)', n) or n.startswith(k):
-            return pd.Timestamp(year, v, 1).date()
+            y = re.search(rf'{k}[-_ ](20\d\d)([-_ ]|$)', n)  # panelden yüklenen dosyalar: ekim-2026-satis-raporu-...
+            return pd.Timestamp(int(y.group(1)) if y else year, v, 1).date()
     return None
 
 

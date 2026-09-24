@@ -160,7 +160,7 @@ function buildKupon() {
 
 // ================= TABS =================
 const built = {};
-const BUILD = { ozet: buildOzet, satis: buildSatis, kar: () => { scenControls($('#scen-kar')); syncScen(); renderKar(false); }, sepet: buildSepet, musteri: buildMusteri, urun: buildUrun, segment: buildSegment, kupon: buildKupon };
+const BUILD = { ozet: buildOzet, satis: buildSatis, kar: () => { scenControls($('#scen-kar')); syncScen(); renderKar(false); }, sepet: buildSepet, musteri: buildMusteri, urun: buildUrun, segment: buildSegment, kupon: buildKupon, raporlar: buildRaporlar };
 function show(id) {
   if (!BUILD[id]) id = 'ozet';
   document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.getAttribute('aria-controls') === id)));

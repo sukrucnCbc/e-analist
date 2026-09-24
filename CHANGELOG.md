@@ -2,6 +2,14 @@
 
 Her sürüm bir kült film adıyla anılır.
 
+## v0.3 — matrix (2026-09-24)
+- **Raporlar sekmesi**: yıl bazlı rapor doluluk takvimi. Her ay × rapor türü bir kutu; renk koyu yeşil (tam) → sarı (kısmi) → kırmızı (yok)
+- Doluluk Supabase'den hesaplanır (`analysis/doluluk.py`); mağaza ve sipariş raporlarında gün bazında kısmi doluluk
+- `python panel.py`: paneli yerel sunucuyla açar; panelden rapor içe aktarma (dosya türü ayrıştırıcıyla doğrulanır) ve tek tuşla Supabase senkronizasyonu
+- Aynı ay ve türde yeni rapor yüklenince eskisi silinmez, `data/raw/_arsiv` klasörüne taşınır
+- **AI asistan (arayüz, test)**: her sayfada sağ altta süzülen küre butonu; tıklayınca 4 hazır içgörü seçeneği (satış, reklam, stok & ürün, kupon kampanya kurgusu) ve soru kutusu açılır. Arka uç henüz bağlı değil, her istek "test aşamasında" yanıtı alır
+- Dosya adında yıl desteği (`ekim-2026-satis-raporu-….xlsx`); yıl yoksa eskisi gibi 2026 varsayılır
+
 ## v0.2 — morpheus (2026-09-24)
 - Panel verisi artık Supabase veritabanından okunuyor (`analysis/db_source.py`); Excel modu yedek olarak duruyor (`SOURCE=excel`)
 - Tek komutla güncelleme: `python guncelle.py` (Supabase → analiz → panel), `--yukle` ile önce yeni Excel'leri yükler
